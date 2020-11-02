@@ -1,10 +1,7 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
 
@@ -29,6 +26,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   InAppWebViewController controller;
+  double proggressLoad = 0;
+  bool loading = false;
 
   @override
   void initState() {
@@ -43,19 +42,49 @@ class _MyHomePageState extends State<MyHomePage> {
       },
       child: Scaffold(
         body: SafeArea(
-          child: InAppWebView(
-            initialUrl: "https://qzscore.com",
-            initialOptions: InAppWebViewGroupOptions(
-                crossPlatform: InAppWebViewOptions(
-                    javaScriptCanOpenWindowsAutomatically: true,
-                    javaScriptEnabled: true,
-                    supportZoom: false,
-                    mediaPlaybackRequiresUserGesture: false,
-                    debuggingEnabled: true)),
-            onWebViewCreated: (webview) {
-              controller = webview;
-              print(webview);
-            },
+          child: Stack(
+            children: [
+              InAppWebView(
+                initialUrl: "https://qzscore.com",
+                onEnterFullscreen: (controller) {
+                  controller.getScale();
+                },
+                initialOptions: InAppWebViewGroupOptions(
+                    crossPlatform: InAppWebViewOptions(
+                        horizontalScrollBarEnabled: false,
+                        javaScriptCanOpenWindowsAutomatically: true,
+                        javaScriptEnabled: true,
+                        supportZoom: false,
+                        mediaPlaybackRequiresUserGesture: true,
+                        debuggingEnabled: true)),
+                onWebViewCreated: (webview) {
+                  controller = webview;
+                  print(webview);
+                },
+                onLoadStart: (controller, url) {
+                  setState(() {
+                    loading = true;
+                  });
+                },
+                onLoadStop: (controller, url) {
+                  setState(() {
+                    loading = false;
+                  });
+                },
+                onProgressChanged:
+                    (InAppWebViewController webview, int proggress) {
+                  setState(() {
+                    loading = true;
+                    proggressLoad = proggress / 100;
+                  });
+                },
+              ),
+              loading
+                  ? LinearProgressIndicator(
+                      value: proggressLoad,
+                    )
+                  : Text(''),
+            ],
           ),
         ),
       ),
