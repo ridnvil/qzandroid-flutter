@@ -1,10 +1,6 @@
-import 'dart:async';
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 void main() {
@@ -34,12 +30,9 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   InAppWebViewController controller;
 
-  Set<Factory<OneSequenceGestureRecognizer>> gestureFactory;
-
   @override
   void initState() {
     super.initState();
-    // if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
   }
 
   @override
@@ -52,7 +45,6 @@ class _MyHomePageState extends State<MyHomePage> {
         body: SafeArea(
           child: InAppWebView(
             initialUrl: "https://qzscore.com",
-            gestureRecognizers: gestureFactory,
             initialOptions: InAppWebViewGroupOptions(
                 crossPlatform: InAppWebViewOptions(
                     javaScriptCanOpenWindowsAutomatically: true,
